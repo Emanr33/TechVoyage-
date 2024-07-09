@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:wardrobe/services/firebase_storage_service.dart';
 import 'package:wardrobe/services/tryOn_service.dart';
 
-
 class ImageEditingScreen extends StatefulWidget {
   final String upperBody;
   final String lowerBody;
-  const ImageEditingScreen({super.key,required this.upperBody,required this.lowerBody});
-
+  const ImageEditingScreen(
+      {super.key, required this.upperBody, required this.lowerBody});
 
   @override
   _ImageEditingScreenState createState() => _ImageEditingScreenState();
@@ -29,13 +28,17 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
 
   void _fetchImage() {
     setState(() {
-      _imageFuture = apiService.editImage(widget.upperBody, widget.lowerBody).then((imageUrl) {
-        if (_retryCount < _maxRetries && (imageUrl == null || !imageUrl.endsWith('.png'))) {
+      _imageFuture = apiService
+          .editImage(widget.upperBody, widget.lowerBody)
+          .then((imageUrl) {
+        if (_retryCount < _maxRetries &&
+            (imageUrl == null || !imageUrl.endsWith('.png'))) {
           _retryCount++;
           _fetchImage();
         } else {
           _retryCount = 0;
         }
+        print(imageUrl);
         return imageUrl;
       });
     });
@@ -67,7 +70,8 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
             } else if (snapshot.hasData) {
               return Image.network(
                 snapshot.data!,
-                errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
                   return const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
