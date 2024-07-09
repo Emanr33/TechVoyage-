@@ -9,6 +9,7 @@ import 'package:wardrobe/boarding_screen.dart';
 import 'package:wardrobe/helpAndSupport_screen.dart';
 import 'package:wardrobe/main_Screen/brands_screen.dart';
 import 'package:wardrobe/referFreind_screen.dart';
+import 'package:wardrobe/services/tryOn_service.dart';
 import 'package:wardrobe/setting_screen.dart';
 import 'package:wardrobe/staticData.dart';
 
@@ -652,7 +653,7 @@ class _FirstScreenState extends State<FirstScreen> {
     'assets/images/76.png',
     'assets/images/80.png',
   ];
-
+  final ApiService apiService = ApiService();
   final GlobalKey<ScaffoldState> key = new GlobalKey<ScaffoldState>();
   Future<void> launchInWebViewOrVC(String url) async {
     if (await canLaunch(url)) {
@@ -670,6 +671,7 @@ class _FirstScreenState extends State<FirstScreen> {
   @override
   void initState() {
     super.initState();
+
   }
 
   @override

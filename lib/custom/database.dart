@@ -155,7 +155,11 @@ class Database extends ChangeNotifier {
   }
 
   File? originalImage;
+  File? dressImage;
+  String? dressSize;
   String? originalSize;
+  File? compressDressImage;
+  String? compressDressSize;
   File? compressImage;
   String? compressSize;
 
@@ -183,6 +187,34 @@ class Database extends ChangeNotifier {
       } else {
         final sizeInMB = (fileSize / (1024 * 1024)).toStringAsFixed(2);
         originalSize = '$sizeInMB MB';
+      }
+      notifyListeners();
+    }
+  }
+  Future<void> pickDressImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+    );
+
+    if (pickedFile != null) {
+      dressImage = File(pickedFile.path);
+      dressSize = null; // Reset the image size
+
+      notifyListeners();
+
+      // Get and set the image size in KB or MB
+      final fileSize = await File(pickedFile.path).length();
+
+      if (fileSize < 1024) {
+        dressSize = '$fileSize bytes';
+      } else if (fileSize < 1024 * 1024) {
+        final sizeInKB = (fileSize / 1024).toStringAsFixed(2);
+        dressSize = '$sizeInKB KB';
+      } else {
+        final sizeInMB = (fileSize / (1024 * 1024)).toStringAsFixed(2);
+        dressSize = '$sizeInMB MB';
       }
       notifyListeners();
     }
