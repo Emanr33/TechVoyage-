@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 import 'dart:async';
 import 'dart:convert';
@@ -6,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/dio.dart';
 
 class ApiService {
-  final Dio _dio = Dio();
+  //final Dio _dio = Dio();
 
   Future<String?> editImage(String upperBody, String lowerBody) async {
     const String url = 'https://modelslab.com/api/v6/image_editing/fashion';
@@ -27,37 +26,30 @@ class ApiService {
       "track_id": null
     };
 
-    try {
-      Response response = await Dio().post(
-        url,
-        options: Options(headers: {'Content-Type': 'application/json'}),
-        data: data,
-      );
+    try{
+    Response response = await Dio().post(
+      url,
+      options: Options(headers: {'Content-Type': 'application/json'}),
+      data: data,
+    );
 
-      log(response.statusCode.toString());
-      if (response.statusCode == 200) {
-        final responseData = response.data as Map<String, dynamic>;
-        log(responseData.toString());
+    log(response.statusCode.toString());
+    if (response.statusCode == 200) {
+      final responseData = response.data as Map<String, dynamic>;
+      log(responseData.toString());
 
-        // if (responseData['proxy_links'] != null && responseData['proxy_links'] is List && responseData['proxy_links'].isNotEmpty) {
-        //   log(response.data.toString());
-        //   return responseData['proxy_links'][0] as String;
-        // }
-         if (responseData['fetch_result'] != null) {
-          String fetchUrl = responseData['fetch_result'] as String;
-           await _pollForResult(fetchUrl);
 
-          return responseData['proxy_links'][0] as String;
+      if (responseData['fetch_result'] != null) {
+        String fetchUrl = responseData['fetch_result'] as String;
+        await _pollForResult(fetchUrl);
 
-        } else {
-          log('Error: No proxy_links or fetch_result in response');
-          return null;
-        }
+        return responseData['proxy_links'][0] as String;
       } else {
         print('Error: ${response.statusMessage}');
         return null;
       }
-    } catch (e) {
+    }
+  }catch (e) {
       print('Exception: $e');
       return null;
     }
@@ -65,17 +57,21 @@ class ApiService {
 
   Future<String?> _pollForResult(String fetchUrl) async {
     const int maxAttempts = 15;
+
     const Duration delay = Duration(seconds: 5);
 
     for (int attempt = 0; attempt < maxAttempts; attempt++) {
       try {
-        Response response = await Dio().post(fetchUrl);
+
+        Response response = await Dio().get(fetchUrl);
         final responseData = response.data as Map<String, dynamic>;
 
-        if (responseData['status'] == 'success' && responseData['proxy_links'] != null && responseData['proxy_links'] is List && responseData['proxy_links'].isNotEmpty) {
+        if (responseData['status'] == 'success' &&
+            responseData['proxy_links'] != null &&
+            responseData['proxy_links'] is List &&
+            responseData['proxy_links'].isNotEmpty) {
           return responseData['proxy_links'][0] as String;
         }
-
 
         log('Status: ${responseData['status']}, retrying...');
       } catch (e) {
