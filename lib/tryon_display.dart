@@ -24,7 +24,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchImage();
+
   }
 
   void _fetchImage() {
@@ -49,7 +49,7 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
       ),
       body: Center(
         child: FutureBuilder<String?>(
-          future: _imageFuture,
+          future: apiService.editImage(widget.upperBody, widget.lowerBody),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
@@ -67,21 +67,21 @@ class _ImageEditingScreenState extends State<ImageEditingScreen> {
             } else if (snapshot.hasData) {
               return Image.network(
                 snapshot.data!,
-                errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                  return const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.error, color: Colors.red, size: 50),
-                        SizedBox(height: 10),
-                        Text(
-                          'Failed to load image',
-                          style: TextStyle(color: Colors.red, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                // errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                //   return const Center(
+                //     child: Column(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       children: [
+                //         Icon(Icons.error, color: Colors.red, size: 50),
+                //         SizedBox(height: 10),
+                //         Text(
+                //           'Failed to load image',
+                //           style: TextStyle(color: Colors.red, fontSize: 16),
+                //         ),
+                //       ],
+                //     ),
+                //   );
+                // },
               );
             } else {
               return Column(
